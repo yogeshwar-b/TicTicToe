@@ -1,5 +1,12 @@
+import GameBoard from './components/GameBoard'
+
 function App() {
-  return <>This is TicTicToe.</>
+  return (
+    <div>
+      <>This is TicTicToe.</>
+      <GameBoard></GameBoard>
+    </div>
+  )
 }
 
 export default App
