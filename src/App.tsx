@@ -2,8 +2,14 @@ import GameBoard from './components/GameBoard'
 
 function App() {
   return (
-    <div>
-      <>This is TicTicToe.</>
+    <div
+      style={{
+        display: 'grid',
+        placeContent: 'center',
+        justifyItems: 'center'
+      }}
+    >
+      <div style={{ fontSize: '3rem' }}>TicTicToe</div>
       <GameBoard></GameBoard>
     </div>
   )
