@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useReducer } from 'react'
 
-const numberofrows = 5
+const numberofrows: number = 3
+const boxsize: string = '100px'
 
 const GameBoard = () => {
   return (
@@ -13,19 +14,32 @@ const GameBoard = () => {
 interface boardprops {
   n: number
 }
-
 const NxNBoard = (props: boardprops) => {
-  let idx = 0
+  let initialBoxStates: boolean[] = Array(props.n ** 2).fill(false)
+  const [boxesState, dispatch] = useReducer(BoxesReducer, initialBoxStates)
+  function handleBoxChange(boxnumber: string) {
+    dispatch({ type: 'changed', boxnumber: boxnumber })
+  }
+  let idx2: number = 0
   return (
-    <div>
-      {Array.from(Array(props.n)).map(() => {
+    /**
+     * @todo - change to css file
+     */
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3,' + boxsize + ')',
+        justifyItems: 'center'
+      }}
+    >
+      {boxesState.map((st: boolean) => {
+        idx2++
         return (
-          <div>
-            {Array.from(Array(props.n)).map(() => {
-              idx++
-              return <PieceButton boxnumber={idx}></PieceButton>
-            })}
-          </div>
+          <PieceButton
+            boxnumber={String(idx2)}
+            boxChanged={handleBoxChange}
+            boxstate={st}
+          ></PieceButton>
         )
       })}
     </div>
@@ -33,23 +47,53 @@ const NxNBoard = (props: boardprops) => {
 }
 
 interface piecebuttonprops {
-  boxnumber: number
+  boxnumber: string
+  boxChanged: (boxnumber: string) => void
+  boxstate: boolean
 }
 const PieceButton = (props: piecebuttonprops) => {
-  const [btnclick, changebtnclick] = useState(false)
+  // const [btnclick, changebtnclick] = useState(false)
+  useEffect(() => {
+    // console.log('rendered ' + props.boxnumber)
+  })
   return (
     <button
       type='button'
-      style={{ display: 'inline', height: '100px', width: '100px' }}
+      /**
+       * @todo - Change to css file
+       */
+      style={{ display: 'inline', height: boxsize, width: boxsize }}
       name={String(props.boxnumber)}
       onClick={() => {
         console.log('changed ' + String(props.boxnumber))
-        changebtnclick(!btnclick)
+        props.boxChanged(String(props.boxnumber))
+        // changebtnclick(!btnclick)
       }}
     >
-      {btnclick ? 'X' : 'O'}
+      {props.boxstate ? 'X' : 'O'}
     </button>
   )
+}
+
+interface action {
+  type: string
+  boxnumber: string
+}
+function BoxesReducer(boxStates: boolean[], action: Partial<action>) {
+  switch (action.type) {
+    case 'changed': {
+      // console.log('changed called for ' + action.boxnumber)
+      let i = 0
+      return boxStates.map((st: boolean) => {
+        i++
+        return String(i) == action.boxnumber ? !st : st
+      })
+    }
+    default: {
+      console.log('default called')
+      return [...boxStates]
+    }
+  }
 }
 
 export default GameBoard
