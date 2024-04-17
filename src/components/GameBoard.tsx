@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from 'react'
+import { EvaluateGame } from '../utils/EvaluateGame'
 
 const numberofrows: number = 3
 const boxsize: string = '100px'
@@ -19,8 +20,9 @@ const NxNBoard = (props: boardprops) => {
   const [boxesState, dispatch] = useReducer(BoxesReducer, initialBoxStates)
   function handleBoxChange(boxnumber: string) {
     dispatch({ type: 'changed', boxnumber: boxnumber })
+    console.log('called after ' + boxnumber)
   }
-  let idx2: number = 0
+  let idx2: number = -1
   return (
     /**
      * @todo - change to css file
@@ -39,6 +41,7 @@ const NxNBoard = (props: boardprops) => {
             boxnumber={String(idx2)}
             boxChanged={handleBoxChange}
             boxstate={st}
+            key={String(idx2)}
           ></PieceButton>
         )
       })}
@@ -83,11 +86,17 @@ function BoxesReducer(boxStates: boolean[], action: Partial<action>) {
   switch (action.type) {
     case 'changed': {
       // console.log('changed called for ' + action.boxnumber)
-      let i = 0
-      return boxStates.map((st: boolean) => {
+      let i = -1
+      let temp = boxStates.map((st: boolean) => {
         i++
         return String(i) == action.boxnumber ? !st : st
       })
+      if (EvaluateGame(temp, Number(action.boxnumber))) {
+        console.log('Someone won')
+      } else {
+        console.log('no one won')
+      }
+      return temp
     }
     default: {
       console.log('default called')
