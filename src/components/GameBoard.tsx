@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { EvaluateGame } from '../utils/EvaluateGame'
 import { BoxMove } from '../../models/boardenums'
 
@@ -15,34 +15,39 @@ const GameBoard = () => {
   )
 }
 
+interface boxesstate {
+  states: BoxMove[]
+  activeplayer: boolean
+}
 interface boardprops {
   n: number
   handleWinner: React.Dispatch<React.SetStateAction<string>>
 }
 const NxNBoard = (props: boardprops) => {
-  const initialBoxStates: BoxMove[] = Array(props.n ** 2).fill(BoxMove.None)
-  const [boxesState, dispatch] = useReducer(BoxesReducer, initialBoxStates)
-  let PlayerRef = useRef(true) //True - P1 , False - P2
+  const initialBoxStates: boxesstate = {
+    states: Array(props.n ** 2).fill(BoxMove.None),
+    activeplayer: true
+  }
+  const [boxesState, dispatch]: [boxesstate, React.Dispatch<Partial<action>>] =
+    useReducer(BoxesReducer, initialBoxStates)
 
   function handleBoxChange(boxnumber: string) {
     dispatch({
       type: 'changed',
       boxnumber: boxnumber,
-      PlayerRef: PlayerRef,
       handleWinner: props.handleWinner
     })
   }
   function handleBoxReset() {
     dispatch({
       type: 'reset',
-      BoxState: initialBoxStates
+      boxesstate: initialBoxStates
     })
   }
 
   let idx2: number = -1
-
   useEffect(() => {
-    PlayerRef.current = !PlayerRef.current
+    console.log(boxesState.activeplayer ? 'player 1' : 'player 2')
   })
   return (
     /**
@@ -55,7 +60,7 @@ const NxNBoard = (props: boardprops) => {
         justifyItems: 'center'
       }}
     >
-      {boxesState.map((st: BoxMove) => {
+      {boxesState.states.map((st: BoxMove) => {
         idx2++
         return (
           <PieceButton
@@ -101,39 +106,47 @@ interface action {
   type: string
   boxnumber: string
   PlayerRef: React.MutableRefObject<boolean>
-  BoxState: BoxMove[]
+  boxesstate: boxesstate
   handleWinner: React.Dispatch<React.SetStateAction<string>>
 }
-function BoxesReducer(boxStates: BoxMove[], action: Partial<action>) {
+function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
+  const boxStates = boxesstate.states
+
   switch (action.type) {
     case 'changed': {
-      let i = -1
-      let temp: BoxMove[] = boxStates.map((st: BoxMove) => {
+      let i: number = -1
+      let changeOccured: boolean = false
+      const temp: BoxMove[] = boxStates.map((st: BoxMove) => {
         i++
-        return String(i) == action.boxnumber
-          ? action.PlayerRef?.current
-            ? BoxMove.P1
-            : BoxMove.P2
-          : st
+        if (String(i) == action.boxnumber && st == -1) {
+          changeOccured = true
+          return boxesstate.activeplayer ? BoxMove.P1 : BoxMove.P2
+        } else {
+          return st
+        }
       })
       if (EvaluateGame(temp, Number(action.boxnumber))) {
         console.log(
-          (action.PlayerRef?.current ? 'Player O ' : 'Player X ') + ' won'
+          (boxesstate.activeplayer ? 'Player O ' : 'Player X ') + ' won'
         )
         if (action.handleWinner)
-          action.PlayerRef?.current
+          boxesstate.activeplayer
             ? action.handleWinner('Player O')
             : action.handleWinner('Player X')
       }
-      return temp
+      return {
+        states: temp,
+        activeplayer: changeOccured
+          ? !boxesstate.activeplayer
+          : boxesstate.activeplayer
+      }
     }
     case 'reset': {
-      if (action.handleWinner) action.handleWinner('')
-      return action.BoxState ? action.BoxState : boxStates
+      return action.boxesstate
     }
     default: {
       console.log('default called')
-      return boxStates
+      return boxesstate
     }
   }
 }
