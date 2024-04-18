@@ -5,49 +5,69 @@ import { BoxMove } from '../../models/boardenums'
 const numberofrows: number = 3
 const boxsize: string = '100px'
 
-const GameBoard = () => {
-  const [winner, SetWinner] = useState('')
-  return (
-    <div>
-      {winner == '' ? <></> : <div>WINNER - {winner}</div>}
-      <NxNBoard n={numberofrows} handleWinner={SetWinner}></NxNBoard>
-    </div>
-  )
-}
-
 interface boxesstate {
   states: BoxMove[]
   activeplayer: boolean
+  winner: string
 }
-interface boardprops {
-  n: number
-  handleWinner: React.Dispatch<React.SetStateAction<string>>
-}
-const NxNBoard = (props: boardprops) => {
-  const initialBoxStates: boxesstate = {
-    states: Array(props.n ** 2).fill(BoxMove.None),
-    activeplayer: true
+
+const GameBoard = () => {
+  // const [winner, SetWinner] = useState('')
+  const initialboxesState: boxesstate = {
+    states: Array(numberofrows ** 2).fill(BoxMove.None),
+    activeplayer: true,
+    winner: ''
   }
   const [boxesState, dispatch]: [boxesstate, React.Dispatch<Partial<action>>] =
-    useReducer(BoxesReducer, initialBoxStates)
+    useReducer(BoxesReducer, initialboxesState)
 
   function handleBoxChange(boxnumber: string) {
     dispatch({
       type: 'changed',
-      boxnumber: boxnumber,
-      handleWinner: props.handleWinner
+      boxnumber: boxnumber
+      // handleWinner: props.handleWinner
     })
   }
   function handleBoxReset() {
     dispatch({
       type: 'reset',
-      boxesstate: initialBoxStates
+      boxesstate: initialboxesState
     })
   }
 
+  return (
+    <div style={{ display: 'grid', placeItems: 'center', gap: '1rem' }}>
+      {boxesState.winner == '' ? (
+        <></>
+      ) : (
+        <div>WINNER - {boxesState.winner}</div>
+      )}
+      <NxNBoard
+        n={numberofrows}
+        boxesState={boxesState}
+        handleBoxChange={handleBoxChange}
+      ></NxNBoard>
+      <button
+        onClick={() => {
+          handleBoxReset()
+        }}
+        style={{ fontSize: '1.5rem' }}
+      >
+        Reset
+      </button>
+    </div>
+  )
+}
+
+interface boardprops {
+  n: number
+  boxesState: boxesstate
+  handleBoxChange: (boxnumber: string) => void
+}
+const NxNBoard = (props: boardprops) => {
   let idx2: number = -1
   useEffect(() => {
-    console.log(boxesState.activeplayer ? 'player 1' : 'player 2')
+    console.log(props.boxesState.activeplayer ? 'player 1' : 'player 2')
   })
   return (
     /**
@@ -60,12 +80,12 @@ const NxNBoard = (props: boardprops) => {
         justifyItems: 'center'
       }}
     >
-      {boxesState.states.map((st: BoxMove) => {
+      {props.boxesState.states.map((st: BoxMove) => {
         idx2++
         return (
           <PieceButton
             boxnumber={String(idx2)}
-            boxChanged={handleBoxChange}
+            boxChanged={props.handleBoxChange}
             boxstate={st}
             key={String(idx2)}
           ></PieceButton>
@@ -115,6 +135,7 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
   switch (action.type) {
     case 'changed': {
       let i: number = -1
+      let winner = ''
       let changeOccured: boolean = false
       const temp: BoxMove[] = boxStates.map((st: BoxMove) => {
         i++
@@ -129,20 +150,18 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
         console.log(
           (boxesstate.activeplayer ? 'Player O ' : 'Player X ') + ' won'
         )
-        if (action.handleWinner)
-          boxesstate.activeplayer
-            ? action.handleWinner('Player O')
-            : action.handleWinner('Player X')
+        winner = boxesstate.activeplayer ? 'Player O' : 'Player X'
       }
       return {
         states: temp,
         activeplayer: changeOccured
           ? !boxesstate.activeplayer
-          : boxesstate.activeplayer
+          : boxesstate.activeplayer,
+        winner: winner
       }
     }
     case 'reset': {
-      return action.boxesstate
+      return action.boxesstate ? action.boxesstate : boxesstate
     }
     default: {
       console.log('default called')
