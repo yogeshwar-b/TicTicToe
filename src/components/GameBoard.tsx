@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useReducer } from 'react'
 import { EvaluateGame } from '../utils/EvaluateGame'
 import { BoxMove } from '../../models/boardenums'
 
@@ -87,6 +87,7 @@ const NxNBoard = (props: boardprops) => {
             boxChanged={props.handleBoxChange}
             boxstate={st}
             key={String(idx2)}
+            winner={props.boxesState.winner}
           ></PieceButton>
         )
       })}
@@ -98,6 +99,7 @@ interface piecebuttonprops {
   boxnumber: string
   boxChanged: (boxnumber: string) => void
   boxstate: BoxMove
+  winner: string
 }
 const PieceButton = (props: piecebuttonprops) => {
   return (
@@ -106,7 +108,15 @@ const PieceButton = (props: piecebuttonprops) => {
       /**
        * @todo - Change to css file
        */
-      style={{ display: 'inline', height: boxsize, width: boxsize }}
+      disabled={
+        props.boxstate != BoxMove.None || props.winner != '' ? true : false
+      }
+      style={{
+        display: 'inline',
+        height: boxsize,
+        width: boxsize,
+        fontSize: '60px'
+      }}
       name={String(props.boxnumber)}
       onClick={() => {
         props.boxChanged(String(props.boxnumber))
