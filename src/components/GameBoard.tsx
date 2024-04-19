@@ -1,22 +1,24 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import { EvaluateGame } from '../utils/EvaluateGame'
 import { BoxMove } from '../../models/boardenums'
 
 const numberofrows: number = 3
 const boxsize: string = '100px'
+const gameplaylimit: number = 5
 
 interface boxesstate {
   states: BoxMove[]
   activeplayer: boolean
   winner: string
+  gameplay: string[]
 }
 
 const GameBoard = () => {
-  // const [winner, SetWinner] = useState('')
   const initialboxesState: boxesstate = {
     states: Array(numberofrows ** 2).fill(BoxMove.None),
     activeplayer: true,
-    winner: ''
+    winner: '',
+    gameplay: []
   }
   const [boxesState, dispatch]: [boxesstate, React.Dispatch<Partial<action>>] =
     useReducer(BoxesReducer, initialboxesState)
@@ -25,7 +27,6 @@ const GameBoard = () => {
     dispatch({
       type: 'changed',
       boxnumber: boxnumber
-      // handleWinner: props.handleWinner
     })
   }
   function handleBoxReset() {
@@ -66,9 +67,7 @@ interface boardprops {
 }
 const NxNBoard = (props: boardprops) => {
   let idx2: number = -1
-  useEffect(() => {
-    console.log(props.boxesState.activeplayer ? 'player 1' : 'player 2')
-  })
+
   return (
     /**
      * @todo - change to css file
@@ -135,29 +134,41 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
   switch (action.type) {
     case 'changed': {
       let i: number = -1
-      let winner = ''
+      let winner = boxesstate.winner
+      let gamepl = boxesstate.gameplay.map((st) => {
+        return st
+      }) //deepcopy
       let changeOccured: boolean = false
       const temp: BoxMove[] = boxStates.map((st: BoxMove) => {
         i++
         if (String(i) == action.boxnumber && st == -1) {
           changeOccured = true
+          if (gamepl[gamepl.length - 1] != action.boxnumber) {
+            gamepl.push(action.boxnumber)
+          }
           return boxesstate.activeplayer ? BoxMove.P1 : BoxMove.P2
         } else {
           return st
         }
       })
-      if (EvaluateGame(temp, Number(action.boxnumber))) {
-        console.log(
-          (boxesstate.activeplayer ? 'Player O ' : 'Player X ') + ' won'
-        )
-        winner = boxesstate.activeplayer ? 'Player O' : 'Player X'
+      if (changeOccured) {
+        if (EvaluateGame(temp, Number(action.boxnumber))) {
+          console.log(
+            (boxesstate.activeplayer ? 'Player O ' : 'Player X ') + ' won'
+          )
+          winner = boxesstate.activeplayer ? 'Player O' : 'Player X'
+        }
+        if (gamepl.length > gameplaylimit) {
+          temp[Number(gamepl.shift())] = BoxMove.None
+        }
       }
       return {
         states: temp,
         activeplayer: changeOccured
           ? !boxesstate.activeplayer
           : boxesstate.activeplayer,
-        winner: winner
+        winner: winner,
+        gameplay: gamepl
       }
     }
     case 'reset': {
