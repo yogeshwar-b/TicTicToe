@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import { EvaluateGame } from '../utils/EvaluateGame'
 import { BoxMove } from '../../models/boardenums'
 
@@ -12,7 +12,6 @@ interface boxesstate {
 }
 
 const GameBoard = () => {
-  // const [winner, SetWinner] = useState('')
   const initialboxesState: boxesstate = {
     states: Array(numberofrows ** 2).fill(BoxMove.None),
     activeplayer: true,
@@ -25,7 +24,6 @@ const GameBoard = () => {
     dispatch({
       type: 'changed',
       boxnumber: boxnumber
-      // handleWinner: props.handleWinner
     })
   }
   function handleBoxReset() {
@@ -135,7 +133,7 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
   switch (action.type) {
     case 'changed': {
       let i: number = -1
-      let winner = ''
+      let winner = boxesstate.winner
       let changeOccured: boolean = false
       const temp: BoxMove[] = boxStates.map((st: BoxMove) => {
         i++
@@ -146,7 +144,7 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
           return st
         }
       })
-      if (EvaluateGame(temp, Number(action.boxnumber))) {
+      if (changeOccured && EvaluateGame(temp, Number(action.boxnumber))) {
         console.log(
           (boxesstate.activeplayer ? 'Player O ' : 'Player X ') + ' won'
         )
