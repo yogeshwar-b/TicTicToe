@@ -6,7 +6,8 @@ function App() {
       style={{
         display: 'grid',
         placeContent: 'center',
-        justifyItems: 'center'
+        justifyItems: 'center',
+        gap: '2rem'
       }}
     >
       <div style={{ fontSize: '3rem' }}>TicTicToe</div>

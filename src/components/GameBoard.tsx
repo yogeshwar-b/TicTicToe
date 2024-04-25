@@ -1,6 +1,7 @@
 import { useReducer } from 'react'
 import { EvaluateGame } from '../utils/EvaluateGame'
 import { BoxMove } from '../../models/boardenums'
+import ArcadeButton from './ArcadeButton/ArcadeButton'
 
 const numberofrows: number = 3
 const boxsize: string = '100px'
@@ -76,7 +77,9 @@ const NxNBoard = (props: boardprops) => {
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(' + numberofrows + ',' + boxsize + ')',
-        justifyItems: 'center'
+        justifyItems: 'center',
+        // columnGap: '2rem',
+        rowGap: '1rem'
       }}
     >
       {props.boxesState.states.map((st: BoxMove) => {
@@ -102,32 +105,32 @@ interface piecebuttonprops {
   winner: string
 }
 const PieceButton = (props: piecebuttonprops) => {
+  function handleBoxChanged(boxnumber: string) {
+    props.boxChanged(boxnumber)
+  }
+
   return (
-    <button
-      type='button'
+    <ArcadeButton
       /**
        * @todo - Change to css file
        */
-      disabled={
-        props.boxstate != BoxMove.None || props.winner != '' ? true : false
+      // isDisabled={
+      //   props.boxstate != BoxMove.None || props.winner != '' ? true : false
+      // }
+      boxNumber={String(props.boxnumber)}
+      pressedEvent={handleBoxChanged}
+      // () => {
+      //   props.boxChanged(String(props.boxnumber))
+      // }
+      boxstate={props.boxstate}
+      textInside={
+        props.boxstate == BoxMove.None
+          ? '-'
+          : props.boxstate == BoxMove.P1
+          ? 'O'
+          : 'X'
       }
-      style={{
-        display: 'inline',
-        height: boxsize,
-        width: boxsize,
-        fontSize: '60px'
-      }}
-      name={String(props.boxnumber)}
-      onClick={() => {
-        props.boxChanged(String(props.boxnumber))
-      }}
-    >
-      {props.boxstate == BoxMove.None
-        ? '-'
-        : props.boxstate == BoxMove.P1
-        ? 'O'
-        : 'X'}
-    </button>
+    />
   )
 }
 
