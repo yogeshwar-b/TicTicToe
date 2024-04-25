@@ -72,8 +72,13 @@
 }
 
 .orange-colors {
-  --fg-color1: #f94b06;
-  --fg-color2: #ffa05a;
+  --fg-color1: #7735ab;
+  --fg-color2: #f5c1ff;
+}
+
+.green-colors {
+  --fg-color1: #008b88;
+  --fg-color2: #a2ffd4;
 }
 
 .default-colors {

@@ -33,7 +33,9 @@ const ArcadeButton = (props: ArcadeButtonProps) => {
           cssclass +
           ' ' +
           (props.boxstate != BoxMove.None
-            ? 'btn-fg-pos-pressed orange-colors'
+            ? props.boxstate == BoxMove.P1
+              ? 'btn-fg-pos-pressed orange-colors'
+              : 'btn-fg-pos-pressed green-colors'
             : 'btn-fg-pos-default default-colors')
         }
       >
