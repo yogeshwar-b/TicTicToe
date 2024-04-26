@@ -3,6 +3,7 @@ import { EvaluateGame } from '../utils/EvaluateGame'
 import { BoxMove } from '../../models/boardenums'
 import ArcadeButton from './ArcadeButton/ArcadeButton'
 import Text3dButton from './Text3DButton/Text3dButton'
+import GameOver from './GameOver'
 
 const numberofrows: number = 3
 const boxsize: string = '100px'
@@ -39,17 +40,17 @@ const GameBoard = () => {
   }
 
   return (
-    <div style={{ display: 'grid', placeItems: 'center', gap: '1rem' }}>
+    <div style={{ display: 'grid', placeItems: 'center', gap: '3rem' }}>
       <Text3dButton
         OnButtonClick={() => {
           console.log('button clicked')
           handleBoxReset()
         }}
       />
-      {boxesState.winner == '' ? (
-        <></>
+      {boxesState.winner != '' ? (
+        <GameOver winner={boxesState.winner}></GameOver>
       ) : (
-        <div>WINNER - {boxesState.winner}</div>
+        ''
       )}
       <NxNBoard
         n={numberofrows}
@@ -77,7 +78,6 @@ const NxNBoard = (props: boardprops) => {
         display: 'grid',
         gridTemplateColumns: 'repeat(' + numberofrows + ',' + boxsize + ')',
         justifyItems: 'center',
-        // columnGap: '2rem',
         rowGap: '1rem'
       }}
     >
@@ -113,14 +113,8 @@ const PieceButton = (props: piecebuttonprops) => {
       /**
        * @todo - Change to css file
        */
-      // isDisabled={
-      //   props.boxstate != BoxMove.None || props.winner != '' ? true : false
-      // }
       boxNumber={String(props.boxnumber)}
       pressedEvent={handleBoxChanged}
-      // () => {
-      //   props.boxChanged(String(props.boxnumber))
-      // }
       boxstate={props.boxstate}
       textInside={
         props.boxstate == BoxMove.None
