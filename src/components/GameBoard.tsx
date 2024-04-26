@@ -2,6 +2,7 @@ import { useReducer } from 'react'
 import { EvaluateGame } from '../utils/EvaluateGame'
 import { BoxMove } from '../../models/boardenums'
 import ArcadeButton from './ArcadeButton/ArcadeButton'
+import Text3dButton from './Text3DButton/Text3dButton'
 
 const numberofrows: number = 3
 const boxsize: string = '100px'
@@ -39,6 +40,12 @@ const GameBoard = () => {
 
   return (
     <div style={{ display: 'grid', placeItems: 'center', gap: '1rem' }}>
+      <Text3dButton
+        OnButtonClick={() => {
+          console.log('button clicked')
+          handleBoxReset()
+        }}
+      />
       {boxesState.winner == '' ? (
         <></>
       ) : (
@@ -49,14 +56,6 @@ const GameBoard = () => {
         boxesState={boxesState}
         handleBoxChange={handleBoxChange}
       ></NxNBoard>
-      <button
-        onClick={() => {
-          handleBoxReset()
-        }}
-        style={{ fontSize: '1.5rem' }}
-      >
-        Reset
-      </button>
     </div>
   )
 }

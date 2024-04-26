@@ -21,5 +21,5 @@
 .text-button:active {
   transform: translate(3px, 3px);
   text-shadow: 0px 0px 0px rgb(240, 240, 240);
-  transition: all 100ms linear;
+  transition: all 50ms linear;
 }
