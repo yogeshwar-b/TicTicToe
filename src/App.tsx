@@ -10,7 +10,6 @@ function App() {
         gap: '2rem'
       }}
     >
-      <div style={{ fontSize: '3rem' }}>TicTicToe</div>
       <GameBoard></GameBoard>
     </div>
   )
