@@ -169,12 +169,15 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
           )
           winner = boxesstate.activeplayer ? 'Player O' : 'Player X'
         }
-        if (gamepl.length > gameplaylimit) {
-          temp[Number(gamepl.shift())] = {
-            BoxMove: BoxMove.None,
-            WillPop: false
+        if (gamepl.length >= gameplaylimit) {
+          if (gamepl.length > gameplaylimit) {
+            //@todo - need a better way of doing this
+            temp[Number(gamepl.shift())] = {
+              BoxMove: BoxMove.None,
+              WillPop: false
+            }
           }
-          // temp[Number(gamepl.shift())] = BoxMove.None
+          temp[Number(gamepl[0])].WillPop = true
         }
       }
       return {

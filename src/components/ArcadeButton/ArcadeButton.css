@@ -71,6 +71,11 @@
     --fg-color1 500ms, --fg-color2 500ms, color 250ms ease-in;
 }
 
+.btn-pop {
+  background-image: linear-gradient(290deg, var(--fg-color1), var(--fg-color2));
+  transition: --fg-color1 1500ms, --fg-color2 1500ms;
+}
+
 .orange-colors {
   --fg-color1: #7735ab;
   --fg-color2: #f5c1ff;
@@ -79,6 +84,11 @@
 .green-colors {
   --fg-color1: #008b88;
   --fg-color2: #a2ffd4;
+}
+
+.red-colors {
+  --fg-color1: #db003a;
+  --fg-color2: #ea048e;
 }
 
 .default-colors {
