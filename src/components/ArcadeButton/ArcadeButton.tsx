@@ -1,5 +1,5 @@
 import './ArcadeButton.css'
-import { BoxMove } from '../../../models/boardenums'
+import { Box, BoxMove } from '../../../models/boardenums'
 
 /**
  *
@@ -10,20 +10,20 @@ interface ArcadeButtonProps {
   boxNumber: string
   pressedEvent: (boxnumber: string) => void
   textInside: string
-  boxstate: BoxMove
+  boxstate: Box
 }
 const ArcadeButton = (props: ArcadeButtonProps) => {
   // const [btnstate, changebtnstate] = useState('default') // default,pressed,released
-  var cssclass = 'btn-fg btn-fg-color-default'
+  const cssclass = 'btn-fg btn-fg-color-default'
   return (
     <button
       className={
         'btn-bg' +
         ' ' +
-        (props.boxstate != BoxMove.None ? '' : 'btn-bg-pressed')
+        (props.boxstate.BoxMove != BoxMove.None ? '' : 'btn-bg-pressed')
       }
       onMouseDown={() => {
-        if (props.boxstate == BoxMove.None) {
+        if (props.boxstate.BoxMove == BoxMove.None) {
           props.pressedEvent(props.boxNumber)
         }
       }}
@@ -32,16 +32,18 @@ const ArcadeButton = (props: ArcadeButtonProps) => {
         className={
           cssclass +
           ' ' +
-          (props.boxstate != BoxMove.None
-            ? props.boxstate == BoxMove.P1
+          (props.boxstate.BoxMove != BoxMove.None
+            ? props.boxstate.BoxMove == BoxMove.P1
               ? 'btn-fg-pos-pressed orange-colors'
               : 'btn-fg-pos-pressed green-colors'
-            : 'btn-fg-pos-default default-colors')
+            : 'btn-fg-pos-default default-colors') +
+          ' ' +
+          (props.boxstate.WillPop ? 'btn-pop red-colors' : '')
         }
       >
         <div
           className={
-            props.boxstate != BoxMove.None
+            props.boxstate.BoxMove != BoxMove.None
               ? 'txt-pos-pressed'
               : 'txt-pos-default'
           }

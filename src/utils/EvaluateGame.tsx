@@ -1,13 +1,13 @@
-import { BoxMove } from '../../models/boardenums'
+import { Box } from '../../models/boardenums'
 
-var match = ''
-var side = 0
-export function EvaluateGame(BoxStates: BoxMove[], idx: number): boolean {
+let match = ''
+let side = 0
+export function EvaluateGame(BoxStates: Box[], idx: number): boolean {
   side = Math.sqrt(BoxStates.length)
   //console.log(side)
-  match = String(BoxStates[idx])
-  let i = Math.floor(idx / side) //Row number
-  let j = idx % side //Col number
+  match = String(BoxStates[idx].BoxMove)
+  const i = Math.floor(idx / side) //Row number
+  const j = idx % side //Col number
   if (i == j || i == side - 1 - j) {
     //box on diagonal
     if (CheckCorner0(BoxStates) || CheckCornerN(BoxStates)) {
@@ -18,11 +18,14 @@ export function EvaluateGame(BoxStates: BoxMove[], idx: number): boolean {
   return CheckRows(idx, BoxStates) || CheckCols(idx, BoxStates) ? true : false
 }
 
-function CheckRows(idx: number, BoxStates: BoxMove[]): boolean {
+function CheckRows(idx: number, BoxStates: Box[]): boolean {
   //console.log('row check')
   for (let j = 0; j < side; j++) {
     //console.log(Math.floor(idx / side) + j)
-    if (String(BoxStates[Math.floor(idx / side) * side + j]) != String(match)) {
+    if (
+      String(BoxStates[Math.floor(idx / side) * side + j].BoxMove) !=
+      String(match)
+    ) {
       return false
     }
   }
@@ -31,11 +34,11 @@ function CheckRows(idx: number, BoxStates: BoxMove[]): boolean {
   return true
 }
 
-function CheckCols(idx: number, BoxStates: BoxMove[]): boolean {
+function CheckCols(idx: number, BoxStates: Box[]): boolean {
   //console.log('col check ' + side)
   for (let i = 0; i < side; i++) {
     //console.log((idx % side) + side * i)
-    if (String(BoxStates[(idx % side) + side * i]) != String(match)) {
+    if (String(BoxStates[(idx % side) + side * i].BoxMove) != String(match)) {
       return false
     }
   }
@@ -44,20 +47,22 @@ function CheckCols(idx: number, BoxStates: BoxMove[]): boolean {
   return true
 }
 
-function CheckCorner0(BoxStates: BoxMove[]): boolean {
+function CheckCorner0(BoxStates: Box[]): boolean {
   //Check ↘ diagonal
   for (let i = 0; i < side; i++) {
-    if (String(BoxStates[i * side + i]) !== String(match)) {
+    if (String(BoxStates[i * side + i].BoxMove) !== String(match)) {
       return false
     }
   }
   //console.log('corner1')
   return true
 }
-function CheckCornerN(BoxStates: BoxMove[]): boolean {
+function CheckCornerN(BoxStates: Box[]): boolean {
   //Check ↙ diagonal
   for (let i = 0; i < side; i++) {
-    if (String(BoxStates[i * side + (side - 1 - i)]) !== String(match)) {
+    if (
+      String(BoxStates[i * side + (side - 1 - i)].BoxMove) !== String(match)
+    ) {
       return false
     }
   }

@@ -1,6 +1,6 @@
 import { useReducer } from 'react'
 import { EvaluateGame } from '../utils/EvaluateGame'
-import { BoxMove } from '../../models/boardenums'
+import { BoxMove, Box } from '../../models/boardenums'
 import ArcadeButton from './ArcadeButton/ArcadeButton'
 import Text3dButton from './Text3DButton/Text3dButton'
 import GameOver from './GameOver'
@@ -10,7 +10,7 @@ const boxsize: string = '100px'
 const gameplaylimit: number = 5
 
 interface boxesstate {
-  states: BoxMove[]
+  states: Box[]
   activeplayer: boolean
   winner: string
   gameplay: string[]
@@ -18,7 +18,10 @@ interface boxesstate {
 
 const GameBoard = () => {
   const initialboxesState: boxesstate = {
-    states: Array(numberofrows ** 2).fill(BoxMove.None),
+    states: Array(numberofrows ** 2).fill({
+      BoxMove: BoxMove.None,
+      WillPop: false
+    }),
     activeplayer: true,
     winner: '',
     gameplay: []
@@ -81,7 +84,7 @@ const NxNBoard = (props: boardprops) => {
         rowGap: '1rem'
       }}
     >
-      {props.boxesState.states.map((st: BoxMove) => {
+      {props.boxesState.states.map((st: Box) => {
         idx2++
         return (
           <PieceButton
@@ -100,7 +103,7 @@ const NxNBoard = (props: boardprops) => {
 interface piecebuttonprops {
   boxnumber: string
   boxChanged: (boxnumber: string) => void
-  boxstate: BoxMove
+  boxstate: Box
   winner: string
 }
 const PieceButton = (props: piecebuttonprops) => {
@@ -117,9 +120,9 @@ const PieceButton = (props: piecebuttonprops) => {
       pressedEvent={handleBoxChanged}
       boxstate={props.boxstate}
       textInside={
-        props.boxstate == BoxMove.None
+        props.boxstate.BoxMove == BoxMove.None
           ? '-'
-          : props.boxstate == BoxMove.P1
+          : props.boxstate.BoxMove == BoxMove.P1
           ? 'O'
           : 'X'
       }
@@ -141,18 +144,20 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
     case 'changed': {
       let i: number = -1
       let winner = boxesstate.winner
-      let gamepl = boxesstate.gameplay.map((st) => {
+      const gamepl = boxesstate.gameplay.map((st) => {
         return st
       }) //deepcopy
       let changeOccured: boolean = false
-      const temp: BoxMove[] = boxStates.map((st: BoxMove) => {
+      const temp: Box[] = boxStates.map((st: Box) => {
         i++
-        if (String(i) == action.boxnumber && st == -1) {
+        if (String(i) == action.boxnumber && st.BoxMove == -1) {
           changeOccured = true
           if (gamepl[gamepl.length - 1] != action.boxnumber) {
             gamepl.push(action.boxnumber)
           }
-          return boxesstate.activeplayer ? BoxMove.P1 : BoxMove.P2
+          return boxesstate.activeplayer
+            ? { BoxMove: BoxMove.P1, WillPop: st.WillPop }
+            : { BoxMove: BoxMove.P2, WillPop: st.WillPop }
         } else {
           return st
         }
@@ -164,8 +169,15 @@ function BoxesReducer(boxesstate: boxesstate, action: Partial<action>) {
           )
           winner = boxesstate.activeplayer ? 'Player O' : 'Player X'
         }
-        if (gamepl.length > gameplaylimit) {
-          temp[Number(gamepl.shift())] = BoxMove.None
+        if (gamepl.length >= gameplaylimit) {
+          if (gamepl.length > gameplaylimit) {
+            //@todo - need a better way of doing this
+            temp[Number(gamepl.shift())] = {
+              BoxMove: BoxMove.None,
+              WillPop: false
+            }
+          }
+          temp[Number(gamepl[0])].WillPop = true
         }
       }
       return {
