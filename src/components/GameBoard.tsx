@@ -81,7 +81,8 @@ const NxNBoard = (props: boardprops) => {
         display: 'grid',
         gridTemplateColumns: 'repeat(' + numberofrows + ',' + boxsize + ')',
         justifyItems: 'center',
-        rowGap: '1rem'
+        columnGap: '4rem',
+        height: '75vh'
       }}
     >
       {props.boxesState.states.map((st: Box) => {
@@ -116,6 +117,7 @@ const PieceButton = (props: piecebuttonprops) => {
       /**
        * @todo - Change to css file
        */
+      GameOver={props.winner != ''}
       boxNumber={String(props.boxnumber)}
       pressedEvent={handleBoxChanged}
       boxstate={props.boxstate}

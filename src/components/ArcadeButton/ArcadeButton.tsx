@@ -11,6 +11,7 @@ interface ArcadeButtonProps {
   pressedEvent: (boxnumber: string) => void
   textInside: string
   boxstate: Box
+  GameOver: boolean
 }
 const ArcadeButton = (props: ArcadeButtonProps) => {
   // const [btnstate, changebtnstate] = useState('default') // default,pressed,released
@@ -38,14 +39,17 @@ const ArcadeButton = (props: ArcadeButtonProps) => {
               : 'btn-fg-pos-pressed green-colors'
             : 'btn-fg-pos-default default-colors') +
           ' ' +
-          (props.boxstate.WillPop ? 'btn-pop red-colors' : '')
+          (!props.GameOver && props.boxstate.WillPop
+            ? 'btn-pop red-colors'
+            : '')
         }
       >
         <div
           className={
-            props.boxstate.BoxMove != BoxMove.None
+            'btn-txt ' +
+            (props.boxstate.BoxMove != BoxMove.None
               ? 'txt-pos-pressed'
-              : 'txt-pos-default'
+              : 'txt-pos-default')
           }
         >
           {props.textInside}

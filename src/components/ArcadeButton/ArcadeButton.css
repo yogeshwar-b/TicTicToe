@@ -34,10 +34,10 @@
 }
 
 .btn-bg {
-  width: 3rem;
+  width: 6rem;
   aspect-ratio: 1;
   background: linear-gradient(290deg, var(--bg-color1), var(--bg-color2));
-  border-radius: 1em;
+  border-radius: 1.5em;
   box-shadow: none;
   border: none;
   padding: 0;
@@ -52,22 +52,22 @@
   display: grid;
   place-content: center;
   padding: 0.5rem;
-  border-radius: 1em;
+  border-radius: 1.5em;
   aspect-ratio: 1;
   background-image: linear-gradient(290deg, var(--fg-color1), var(--fg-color2));
   color: transparent;
 }
 
 .btn-fg-pos-default {
-  transform: translateY(-0.6rem);
-  transition: transform 250ms cubic-bezier(0, 0, 0.26, 2.16), --fg-color1 500ms,
+  transform: translateY(-1rem);
+  transition: transform 350ms cubic-bezier(0, 0, 0.26, 2.16), --fg-color1 500ms,
     --fg-color2 500ms;
 }
 
 .btn-fg-pos-pressed {
   transform: translateY(-0.1rem);
   color: var(--text-color);
-  transition: transform 150ms linear(0 0%, 1.23 20.19%, 1.22 77.54%, 1 100%),
+  transition: transform 250ms linear(0 0%, 1.23 20.19%, 1.22 77.54%, 1 100%),
     --fg-color1 500ms, --fg-color2 500ms, color 250ms ease-in;
 }
 
@@ -103,4 +103,9 @@
 .txt-pos-pressed {
   transform: translateY(0rem);
   transition: transform 150ms ease-in;
+}
+
+.btn-txt {
+  font-size: 3rem;
+  font-weight: bolder;
 }

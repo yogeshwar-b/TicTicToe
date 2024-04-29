@@ -6,7 +6,7 @@ const GameOver = ({ winner }: { winner: string }) => {
         minWidth: '50vw',
         maxWidth: '80vw',
         padding: '1rem',
-        height: '50vh',
+        height: '1000px',
         background: 'linear-gradient(0deg, black, transparent)',
         zIndex: '10',
         display: 'grid',
