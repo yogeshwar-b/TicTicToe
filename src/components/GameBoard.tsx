@@ -116,6 +116,7 @@ const PieceButton = (props: piecebuttonprops) => {
       /**
        * @todo - Change to css file
        */
+      GameOver={props.winner != ''}
       boxNumber={String(props.boxnumber)}
       pressedEvent={handleBoxChanged}
       boxstate={props.boxstate}
