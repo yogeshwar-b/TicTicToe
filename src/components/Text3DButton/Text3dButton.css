@@ -11,7 +11,7 @@
 .text-button {
   animation: button-click 400ms linear 2;
   color: gray;
-  font-size: 2rem;
+  font-size: 6rem;
   background: none;
   padding: 0;
   border: none;

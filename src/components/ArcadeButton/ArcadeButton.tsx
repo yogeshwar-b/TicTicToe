@@ -46,9 +46,10 @@ const ArcadeButton = (props: ArcadeButtonProps) => {
       >
         <div
           className={
-            props.boxstate.BoxMove != BoxMove.None
+            'btn-txt ' +
+            (props.boxstate.BoxMove != BoxMove.None
               ? 'txt-pos-pressed'
-              : 'txt-pos-default'
+              : 'txt-pos-default')
           }
         >
           {props.textInside}
