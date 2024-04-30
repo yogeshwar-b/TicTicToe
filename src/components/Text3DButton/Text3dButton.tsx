@@ -2,7 +2,7 @@ import './Text3dButton.css'
 
 interface Text3dButtonProps {
   // ButtonText: string
-  OnButtonClick: () => void //#change this if your method is different
+  OnButtonClick: () => void
 }
 
 const Text3dButton = (props: Text3dButtonProps) => {
