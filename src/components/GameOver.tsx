@@ -3,8 +3,7 @@ const GameOver = ({ winner }: { winner: string }) => {
     <div
       style={{
         position: 'absolute',
-        minWidth: '50vw',
-        maxWidth: '80vw',
+        width: '90vw',
         padding: '1rem',
         height: '1000px',
         background: 'linear-gradient(0deg, black, transparent)',

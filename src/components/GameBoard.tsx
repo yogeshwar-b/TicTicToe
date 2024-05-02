@@ -6,7 +6,7 @@ import Text3dButton from './Text3DButton/Text3dButton'
 import GameOver from './GameOver'
 
 const numberofrows: number = 3
-const boxsize: string = '100px'
+const boxsize: string = '140px'
 const gameplaylimit: number = 5
 
 interface boxesstate {

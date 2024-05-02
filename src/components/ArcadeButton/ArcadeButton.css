@@ -33,8 +33,15 @@
   inherits: false;
 }
 
+@property --btn-offset {
+  syntax: '<length>';
+  initial-value: 24px;
+  inherits: false;
+}
+
 .btn-bg {
-  width: 6rem;
+  margin-top: var(--btn-offset);
+  width: 100%;
   aspect-ratio: 1;
   background: linear-gradient(290deg, var(--bg-color1), var(--bg-color2));
   border-radius: 1.5em;
@@ -59,7 +66,7 @@
 }
 
 .btn-fg-pos-default {
-  transform: translateY(-1rem);
+  transform: translateY(calc(-1 * var(--btn-offset)));
   transition: transform 350ms cubic-bezier(0, 0, 0.26, 2.16), --fg-color1 500ms,
     --fg-color2 500ms;
 }
